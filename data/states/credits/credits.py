@@ -19,7 +19,7 @@ class Credits(_State):
         self.titles = []
         names = ["/u/mekire", "/u/bitcraft", "/u/iminurnamez"]
         
-        for i,name in enumerate(names, start=-1):
+        for i,name in enumerate(names, start=-2):
             text = "Some stuff by {}".format(name)
             self.titles.append(Label(prepare.FONTS["Fixedsys500c"], 48, text,
                                pg.Color("white"),

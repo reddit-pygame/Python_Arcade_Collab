@@ -46,7 +46,7 @@ def scaled_mouse_pos(scale, pos=None):
 
 
 ### Resource loading functions.
-def load_all_gfx(directory,colorkey=(0,0,0),accept=(".png",".jpg",".bmp")):
+def load_all_gfx(directory, colorkey=(0,0,0), accept=(".png",".jpg",".bmp")):
     """
     Load all graphics with extensions in the accept argument.  If alpha
     transparency is found in the image the image will be converted using
