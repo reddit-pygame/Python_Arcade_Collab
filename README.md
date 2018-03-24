@@ -1,6 +1,6 @@
 # Python Arcade Collab
 
-Python Arcade Collab is a group Pygame project focused on creating a collection of Atari-esqu mini-games.  Please note that this is a CC-0 project so all code contributions must be licensed as such.  Resources (images, music, fonts) without CC0 licenses are permitted, but they must have permissive licenses for non-commerical projects. Discussion on the project takes place on [our project subreddit](http://www.reddit.com/r/https://www.reddit.com/r/PythonArcadeCollab/).
+Python Arcade Collab is a group Pygame project focused on creating a collection of Atari-esqu mini-games.  Please note that this is a CC-0 project so all code contributions must be licensed as such.  Resources (images, music, fonts) without CC0 licenses are permitted, but they must have permissive licenses for non-commerical projects. Discussion on the project takes place on [our project subreddit](https://www.reddit.com/r/PythonArcadeCollab/).
 
 ## Project Goals  
 
