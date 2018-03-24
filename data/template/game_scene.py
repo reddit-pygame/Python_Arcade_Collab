@@ -1,3 +1,10 @@
+"""
+This is the template for the games accessible from the lobby.
+To add your own game to the lobby, copy this folder into games,
+and change the folder name to the name of your game.
+Then get to work.
+"""
+
 import pygame as pg
 
 from data.core import prepare
@@ -20,26 +27,43 @@ class Scene(_State):
         self.title = Label(prepare.FONTS["Fixedsys500c"], 72, "Your game here!",
                          pg.Color("white"), {"center": self.screen_rect.center})
 
-    def startup(self, current_time, persistent):
+    def startup(self, persistent):
         """
         This method will be called each time the state resumes.
         """
-        self.start_time = current_time
+        self.start_time = pg.time.get_ticks()
         self.persist = persistent
+
+    def cleanup(self):
+        """
+        Add variables that should persist to the self.persist dictionary.
+        Then reset State.done to False.
+        """
+        self.done = False
+        return self.persist
 
     def update(self, surface, keys, current_time, dt, scale):
         """
-        Updates the game scene screen.
+        Updates the game scene and then draws the screen screen.
         """
         self.anykey.update(current_time)
         self.draw(surface)
 
     def draw(self, surface):
+        """
+        Put all drawing logic here.  Called at the end of the update method.
+        """
         surface.fill(prepare.BACKGROUND_BASE)
         self.title.draw(surface)
         surface.blit(self.anykey.image, self.anykey.rect)
 
     def get_event(self, event, scale):
+        """
+        Process all events here. States must not have their own embedded
+        event loops as this cuts the rest of the program off from events.
+        If you would like to use mouse position events you will need to scale it
+        with scaled_mouse_pos found in data.core.tools.py.
+        """
         if event.type == pg.QUIT:
             self.done = True
             self.quit = True

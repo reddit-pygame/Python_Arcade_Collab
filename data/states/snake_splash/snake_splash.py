@@ -21,11 +21,6 @@ class SnakeSplash(_State):
         self.image.set_alpha(self.alpha)
         self.rect = self.image.get_rect(center=self.screen_rect.center)
 
-    def startup(self, current_time, persistent):
-        """This method will be called each time the state resumes."""
-        self.start_time = current_time
-        self.persist = persistent
-
     def update(self, surface, keys, current_time, dt, scale):
         """Updates the splash screen."""
         self.now = current_time

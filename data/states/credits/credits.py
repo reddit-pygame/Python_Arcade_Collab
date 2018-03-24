@@ -31,13 +31,6 @@ class Credits(_State):
                            {"centerx" : self.screen_rect.centerx,
                             "centery" : self.screen_rect.centery + (i+1)*80}))
 
-    def startup(self, current_time, persistent):
-        """
-        This method will be called each time the state resumes.
-        """
-        self.start_time = current_time
-        self.persist = persistent
-
     def update(self, surface, keys, current_time, dt, scale):
         """
         Updates the credit screen.

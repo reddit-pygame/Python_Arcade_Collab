@@ -20,7 +20,7 @@ class Scene(_State):
                           "GAME" : states.Game(self),
                           "DEAD" : states.YouDead("Dead.", self)}
         self.state_machine = StateMachine(True)
-        self.state_machine.setup_states(machine_states, "STARTUP")
+        self.state_machine.setup_states(machine_states)
         self.state_machine.start_state("STARTUP")
 
     def update(self, surface, keys, current_time, dt, scale):

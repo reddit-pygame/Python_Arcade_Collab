@@ -18,7 +18,6 @@ def main():
     app = data.core.control.Control(*args)
     app.show_fps = prepare.ARGS["FPS"]
     app.start(state)
-    # Start the main state
     if not prepare.ARGS['profile']:
         app.main()
     else:

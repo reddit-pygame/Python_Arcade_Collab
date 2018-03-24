@@ -99,8 +99,8 @@ class LobbyScreen(_State):
         elif game.rect.x >= prepare.RENDER_SIZE[0] and mag == 1:
             game.rect.x -= self.loop_length
 
-    def startup(self, current_time, persistent):
-        self.persist = persistent
+    def startup(self, persistent):
+        super(LobbyScreen, self).startup(persistent)
         games = self.controller.game_thumbs
         self.update_screen_buttons(games)
 

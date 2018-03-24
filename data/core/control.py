@@ -73,17 +73,15 @@ class Control(object):
         It also gives the state machine a copy of the game_thumbs dict
         for convenience.
         """
-        self.now = pg.time.get_ticks()
-        self.state_machine.setup_states(self.state_dict, start_state)
+        self.state_machine.setup_states(self.state_dict)
         self.state_machine.game_thumbs = self.game_thumbs
-        self.state_machine.start_state(start_state, self.now)
+        self.state_machine.start_state(start_state)
 
     def update(self, dt):
         """
         Checks if a state is done or has called for a game quit.
         State is flipped if neccessary and State.update is called.
         """
-        self.screen = pg.display.get_surface()
         self.now = pg.time.get_ticks()
         if self.state_machine.done:
             self.done = True

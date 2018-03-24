@@ -99,8 +99,8 @@ class Game(_State):
 
 
 class YouDead(AnyKey):
-    def startup(self, now, persistant):
-        super(YouDead, self).startup(now, persistant)
+    def startup(self, persistant):
+        super(YouDead, self).startup(persistant)
         surf = pg.Surface(prepare.RENDER_SIZE).convert()
         screen_copy = pg.display.get_surface().copy()
         scale_args = (screen_copy, prepare.RENDER_SIZE, surf)

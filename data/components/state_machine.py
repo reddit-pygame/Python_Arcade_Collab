@@ -1,6 +1,7 @@
 """
 A generalized state machine.  Most notably used for general program flow.
 """
+import pygame as pg
 
 
 class StateMachine(object):
@@ -14,14 +15,12 @@ class StateMachine(object):
         self.state_name = None
         self.state = None
 
-    def setup_states(self, state_dict, start_state):
+    def setup_states(self, state_dict):
         """
         Given a dictionary of states and a state to start in,
         creates the self.state_dict.
         """
         self.state_dict = state_dict
-        self.state_name = start_state
-        self.state = self.state_dict[self.state_name]
 
     def update(self, surface, keys, now, dt, scale):
         """
@@ -31,10 +30,10 @@ class StateMachine(object):
         if self.state.quit:
             self.done = True
         elif self.state.done:
-            self.flip_state(now)
+            self.flip_state()
         self.state.update(surface, keys, now, dt, scale)
 
-    def start_state(self, state_name, now=0.0, persist=None):
+    def start_state(self, state_name, persist=None):
         """
         Start a state.
         """
@@ -46,18 +45,18 @@ class StateMachine(object):
             print('Cannot find state: {}'.format(state_name))
             raise RuntimeError
         instance = state if self.hold_instances else state(self)
-        instance.startup(now, persist)
+        instance.startup(persist)
         self.state = instance
         self.state_name = state_name
 
-    def flip_state(self, now):
+    def flip_state(self):
         """
         When a State changes to done necessary startup and cleanup functions
         are called and the current State is changed.
         """
         previous, self.state_name = self.state_name, self.state.next
         persist = self.state.cleanup()
-        self.start_state(self.state_name, now, persist)
+        self.start_state(self.state_name, persist)
         self.state.previous = previous
 
     def get_event(self, event, scale=(1,1)):
@@ -91,13 +90,13 @@ class _State(object):
         """
         pass
 
-    def startup(self, now, persistant):
+    def startup(self, persistant):
         """
         Add variables passed in persistant to the proper attributes and
         set the start time of the State to the current time.
         """
         self.persist = persistant
-        self.start_time = now
+        self.start_time = pg.time.get_ticks()
 
     def cleanup(self):
         """
