@@ -1,3 +1,13 @@
+"""
+Welcome to the Python Arcade Collab project, please visit us at
+https://www.reddit.com/r/PythonArcadeCollab/
+
+All code is CC-0 unless otherwise explicitly stated.
+No warranty expressed or implied.
+
+This file serves as the entry point of the entire program.
+"""
+
 import sys
 import pygame as pg
 

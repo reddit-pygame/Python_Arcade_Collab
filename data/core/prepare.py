@@ -1,5 +1,10 @@
 """
-This module initializes the display and creates dictionaries of resources.
+This module performs various tasks related to starting up the program.
+These include initializing the display, processing command line arguments,
+creating dictionaries of resources, and starting the music.
+
+Many useful constants are also defined here so you will often find this file
+imported across the entire program.
 """
 
 import os
@@ -12,25 +17,25 @@ CAPTION = "Python Arcade Collab"
 TITLE_TRACK = "Nils_505_Feske_-_03_-_Balibulu"
 START_SIZE = (800, 600)
 RENDER_SIZE = (928, 696)
-RESOLUTIONS = [(600,400), (800, 600), (928, 696), (1280, 960), (1400, 1050)]
-CARD_SIZE = (125, 181)
-CHIP_SIZE = (32, 19)
+RESOLUTIONS = [(600, 400), (800, 600), (928, 696), (1280, 960), (1400, 1050)]
 WIN_POS = (0, 0)
-MONEY = 1000
-ARGS = tools.get_cli_args(CAPTION, WIN_POS, START_SIZE, MONEY)
+
+# Some commonly used colors.
+BACKGROUND_BASE = (5, 5, 15) # Pure Black is often too severe.
+LOW_LIGHT_GREEN = (0, 166, 8)
+HIGH_LIGHT_GREEN = (0, 232, 37)
+
+# Process command line arguments.
+ARGS = tools.get_cli_args(CAPTION, WIN_POS, START_SIZE)
 # Adjust settings based on args
 START_SIZE = int(ARGS['size'][0]), int(ARGS['size'][1])
 DEBUG = bool(ARGS['debug'])
 
-BACKGROUND_BASE = (5, 5, 15) # Pure Black is too severe.
-LOW_LIGHT_GREEN = (0, 166, 8)
-HIGH_LIGHT_GREEN = (0, 232, 37)
 
-
-#Pre-initialize the mixer for less delay before a sound plays
+# Pre-initialize the mixer for less delay before a sound plays.
 pg.mixer.pre_init(44100, -16, 1, 512)
 
-#Initialization
+# Initialization of display.
 pg.init()
 if ARGS['center']:
     os.environ['SDL_VIDEO_CENTERED'] = "True"
@@ -39,9 +44,11 @@ else:
 pg.display.set_caption(CAPTION)
 if ARGS['fullscreen']:
     pg.display.set_mode(START_SIZE, pg.FULLSCREEN)
-else:
+elif ARGS["resizable"]:
     pg.display.set_mode(START_SIZE, pg.RESIZABLE)
     pg.event.clear(pg.VIDEORESIZE)
+else:
+    pg.display.set_mode(START_SIZE)
 
 
 # Resource loading (Fonts and music just contain path names).

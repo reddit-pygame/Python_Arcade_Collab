@@ -46,7 +46,7 @@ def scaled_mouse_pos(scale, pos=None):
 
 
 ### Resource loading functions.
-def load_all_gfx(directory, colorkey=(0,0,0), accept=(".png",".jpg",".bmp")):
+def load_all_gfx(directory, colorkey=(255,0,255), accept=(".png",".jpg",".bmp")):
     """
     Load all graphics with extensions in the accept argument.  If alpha
     transparency is found in the image the image will be converted using
@@ -68,12 +68,15 @@ def load_all_gfx(directory, colorkey=(0,0,0), accept=(".png",".jpg",".bmp")):
 
 
 def _generic_resoure_loader(directory, accept):
-    songs = {}
-    for song in os.listdir(directory):
-        name,ext = os.path.splitext(song)
+    """
+    Loads resources from given directory skipping file extensions not in accept.
+    """
+    resources = {}
+    for resource in os.listdir(directory):
+        name, ext = os.path.splitext(resource)
         if ext.lower() in accept:
-            songs[name] = os.path.join(directory, song)
-    return songs
+            resources[name] = os.path.join(directory, resource)
+    return resources
 
 
 def load_all_music(directory, accept=(".wav", ".mp3", ".ogg", ".mdi")):
@@ -104,7 +107,7 @@ def load_all_sfx(directory, accept=(".wav", ".mp3", ".ogg", ".mdi")):
     """
     Load all sfx of extensions found in accept.  Unfortunately it is
     common to need to set sfx volume on a one-by-one basis.  This must be done
-    manually if necessary in the setup module.
+    manually if necessary in the calling module.
     """
     effects = {}
     for fx in os.listdir(directory):
@@ -128,7 +131,9 @@ def strip_from_sheet(sheet, start, size, columns, rows=1):
 
 
 def strip_coords_from_sheet(sheet, coords, size):
-    """Strip specific coordinates from a sprite sheet."""
+    """
+    Strip specific coordinates from a sprite sheet.
+    """
     frames = []
     for coord in coords:
         location = (coord[0]*size[0], coord[1]*size[1])
@@ -137,7 +142,9 @@ def strip_coords_from_sheet(sheet, coords, size):
 
 
 def get_cell_coordinates(rect, point, size):
-    """Find the cell of size, within rect, that point occupies."""
+    """
+    Find the cell of size, within rect, that point occupies.
+    """
     cell = [None, None]
     point = (point[0]-rect.x, point[1]-rect.y)
     cell[0] = (point[0]//size[0])*size[0]
@@ -146,7 +153,9 @@ def get_cell_coordinates(rect, point, size):
 
 
 def cursor_from_image(image):
-    """Take a valid image and create a mouse cursor."""
+    """
+    Take a valid cursor image and create a mouse cursor.
+    """
     colors = {(0,0,0,255) : "X",
               (255,255,255,255) : "."}
     rect = image.get_rect()
@@ -160,7 +169,7 @@ def cursor_from_image(image):
     return icon_string
 
 
-def get_cli_args(caption, win_pos, start_size, money):
+def get_cli_args(caption, win_pos, start_size):
     """
     Modify prepare module globals based on command line arguments,
     quickly force settings for debugging.
@@ -171,26 +180,24 @@ def get_cli_args(caption, win_pos, start_size, money):
     parser.add_argument('-w','--winpos', nargs=2, default=win_pos, metavar=('X', 'Y'),
         help='position starting window at (X,Y), default is (0,0)')
     parser.add_argument('-s' , '--size', nargs=2, default=start_size, metavar=('WIDTH', 'HEIGHT'),
-        help='set window size to WIDTH HEIGHT, defualt is {}'.format(start_size))
+        help='set window size to WIDTH HEIGHT, default is {}'.format(start_size))
     parser.add_argument('-f' , '--fullscreen', action='store_true',
         help='start in fullscreen')
     parser.add_argument('-m' , '--music_off', action='store_true',
         help='start with no music')
     parser.add_argument('-S', '--straight', action='store', type=str,
-        help='go straight to the named game')
+        help='go straight to the named scene')
     parser.add_argument('-d', '--debug', action='store_true',
         help='run game in debug mode')
     parser.add_argument('-F', '--FPS', action='store_true',
         help='show FPS in title bar')
     parser.add_argument('-p', '--profile', action='store_true',
         help='run game with profiling')
-    parser.add_argument('-B', '--bots', action='store_true',
-        help='enable test bots')
     args = vars(parser.parse_args())
-    #check each condition
-    if not args['center'] or (args['winpos'] != win_pos): #if -c or -w options
+    # Check each condition.
+    if not args['center'] or (args['winpos'] != win_pos): # If -c or -w options
         args['center'] = False
-    if args['size'] != start_size: # if screen size is different
+    if args['size'] != start_size: # If screen size is different
         args['resizable'] = False
     if args['fullscreen']:
         args['center'] = False
@@ -199,7 +206,9 @@ def get_cli_args(caption, win_pos, start_size, money):
 
 
 class Anim(object):
-    """A class to simplify the act of adding animations to sprites."""
+    """
+    A class to simplify the act of adding animations to sprites.
+    """
     def __init__(self, frames, fps, loops=-1):
         """
         The argument frames is a list of frames in the correct order;
@@ -233,7 +242,9 @@ class Anim(object):
         return self.frames[self.frame]
 
     def reset(self):
-        """Set frame, timer, and loop status back to the initialized state."""
+        """
+        Set frame, timer, and loop status back to the initialized state.
+        """
         self.frame = 0
         self.timer = None
         self.loop_count = 0
@@ -257,7 +268,9 @@ class Timer(object):
         self.done = False
 
     def check_tick(self, now):
-        """Returns true if a tick worth of time has passed."""
+        """
+        Returns true if a tick worth of time has passed.
+        """
         if not self.timer:
             self.timer = now
             return True
