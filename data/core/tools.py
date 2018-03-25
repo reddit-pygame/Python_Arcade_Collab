@@ -194,6 +194,7 @@ def get_cli_args(caption, win_pos, start_size):
     parser.add_argument('-p', '--profile', action='store_true',
         help='run game with profiling')
     args = vars(parser.parse_args())
+    args['resizable'] = True
     # Check each condition.
     if not args['center'] or (args['winpos'] != win_pos): # If -c or -w options
         args['center'] = False
