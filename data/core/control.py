@@ -1,19 +1,22 @@
+"""
+This file contains the Control class which manages the primary control flow
+for the entire program.
+"""
+
 import os
-import json
 import pygame as pg
 
 from collections import OrderedDict
 from importlib import import_module
 
-from data.core import prepare
 from data.components import state_machine
 
 
 class Control(object):
     """
     Control class for entire project. Contains the game loop, and contains
-    the event_loop which passes events to States as needed. Logic for flipping
-    states is also found here.
+    the event_loop which passes events to the state_machine as needed.
+    Autodetection for both core states and game states is also handled here.
     """
     def __init__(self, caption, render_size, resolutions):
         self.screen = pg.display.get_surface()
@@ -37,7 +40,9 @@ class Control(object):
 
     def auto_discovery(self, scene_folder):
         """
-        Scan a folder, load states found in it, and register them
+        Scan a folder, load states found in it, and insert them in the
+        state_dict.  If the scenefolder is "games" it will also load the
+        lobby thumbnail for that game and place it in the game_thumbs dict.
         """
         scene_folder_path = os.path.join(".", "data", scene_folder)
         scene_package = "data.{}.".format(scene_folder)
@@ -79,8 +84,8 @@ class Control(object):
 
     def update(self, dt):
         """
-        Checks if a state is done or has called for a game quit.
-        State is flipped if neccessary and State.update is called.
+        Checks if the state_machine is done and then updates the state_machine
+        with the appropiate arguments.
         """
         self.now = pg.time.get_ticks()
         if self.state_machine.done:
@@ -101,8 +106,9 @@ class Control(object):
 
     def event_loop(self):
         """
-        Process all events and pass them down to current State.
-        The f5 key globally turns on/off the display of FPS in the caption
+        Process all events and pass them down to the state_machine.
+        The f5 key globally turns on/off the display of FPS in the caption.
+        Screen resizes also handled here.
         """
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
@@ -127,7 +133,7 @@ class Control(object):
             return
         res_index = self.resolutions.index(self.screen_rect.size)
         adjust = 1 if size > self.screen_rect.size else -1
-        if 0 <= res_index+adjust < len(self.resolutions):
+        if 0 <= res_index + adjust < len(self.resolutions):
             new_size = self.resolutions[res_index+adjust]
         else:
             new_size = self.screen_rect.size
