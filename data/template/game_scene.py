@@ -44,14 +44,14 @@ class Scene(_State):
 
     def update(self, surface, keys, current_time, dt, scale):
         """
-        Updates the game scene and then draws the screen screen.
+        Updates the game scene and then draws the screen.
         """
         self.anykey.update(current_time)
         self.draw(surface)
 
     def draw(self, surface):
         """
-        Put all drawing logic here.  Called at the end of the update method.
+        Put all drawing logic here. Called at the end of the update method.
         """
         surface.fill(prepare.BACKGROUND_BASE)
         self.title.draw(surface)
