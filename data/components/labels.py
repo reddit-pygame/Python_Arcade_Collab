@@ -1,6 +1,12 @@
+"""
+This module contains some useful classes for text rendering and GUI elements,
+such as buttons and text input boxes.
+
+TODO: needs some cleaning up, consolidation, and documentation.
+"""
+
 import os
 import string
-from itertools import cycle
 
 import pygame as pg
 from data.core import prepare, tools
@@ -62,6 +68,7 @@ def _parse_color(color):
     return color
 
 
+# Should probably inherit from sprites.
 class Label(object):
     """
     Parent class all labels inherit from. Color arguments can use color names
@@ -149,7 +156,13 @@ class MultiLineLabel(object):
 
 
 class ButtonGroup(pg.sprite.Group):
+    """
+    A sprite group to hold multiple buttons.
+    """
     def get_event(self, event, *args, **kwargs):
+        """
+        Only passes events along to Buttons that are both active and visible.
+        """
         check = (s for s in self.sprites() if s.active and s.visible)
         for s in check:
             s.get_event(event, *args, **kwargs)

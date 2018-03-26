@@ -1,10 +1,12 @@
-"""A module of funtions dealing with angles in pygame.
-    All functions (other than project) take lists or tuples
-    of pygame coordinates as origin, destination
-    and return the appropriate angle in radians."""
+"""
+A module of funtions dealing with angles in pygame.
+All functions (other than project) take lists or tuples
+of pygame coordinates as origin, destination
+and return the appropriate angle in radians.
+"""
 
-from math import pi, hypot, cos, sin, atan2, degrees, radians
 import pygame as pg
+from math import pi, hypot, cos, sin, atan2, degrees, radians
 
 
 def get_distance(origin, destination):
@@ -21,7 +23,7 @@ def get_midpoint(origin, destination):
     """
     x_dist = destination[0] + origin[0]
     y_dist = destination[1] + origin[1]
-    return x_dist / 2, y_dist / 2
+    return x_dist / 2.0, y_dist / 2.0
 
 
 def get_angle(origin, destination):
@@ -90,8 +92,3 @@ def get_collision_side(rect, other_rect):
         if colls[side]:
             return side
     return "corner"
-
-
-if __name__ == "__main__":
-    print(get_distance((100, 100), (200, 100)))
-    print(get_distance((100, 100), (0, 200)))

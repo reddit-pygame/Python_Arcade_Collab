@@ -1,24 +1,33 @@
 """
 A generalized state machine.  Most notably used for general program flow.
 """
+
 import pygame as pg
 
 
 class StateMachine(object):
     """
     A generic state machine.
+    This class can have states which are either the state classes themselves
+    (only instantiated on startup), or instances of these states.  Instances
+    should be used if you will be switching back to this state after leaving it
+    and need it to remain the way it was when you left it. 
     """
     def __init__(self, hold_instances=False):
+        """
+        Pass hold_instances=True to let the machine know that the state_dict
+        contains instances rather than classes.
+        """
         self.hold_instances = hold_instances
         self.done = False
         self.state_dict = {}
         self.state_name = None
         self.state = None
 
+    # Possibly remove or absorb into __init__.
     def setup_states(self, state_dict):
         """
-        Given a dictionary of states and a state to start in,
-        creates the self.state_dict.
+        Set the state_dict to the passed in dictionary.
         """
         self.state_dict = state_dict
 
@@ -36,6 +45,7 @@ class StateMachine(object):
     def start_state(self, state_name, persist=None):
         """
         Start a state.
+        The current state is instantiated if hold_instance=False.
         """
         if persist is None:
             persist = {}
