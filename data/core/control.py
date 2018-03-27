@@ -9,6 +9,7 @@ import pygame as pg
 from collections import OrderedDict
 from importlib import import_module
 
+from data.core import prepare
 from data.components import state_machine
 
 
@@ -54,7 +55,10 @@ class Control(object):
             self.state_dict[folder] = state
             if scene_folder == "games":
                 path = os.path.join(scene_folder_path, folder, "lobby_thumb.png")
-                thumb = pg.image.load(path).convert()
+                try:
+                    thumb = pg.image.load(path).convert()
+                except pg.error:
+                    thumb = prepare.GFX["default_image"]
                 self.game_thumbs[folder] = thumb
 
     @staticmethod
