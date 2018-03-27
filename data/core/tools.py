@@ -141,6 +141,22 @@ def strip_coords_from_sheet(sheet, coords, size):
     return frames
 
 
+def tile_surface(size, tile, transparent=False):
+    """
+    Fill a surface of the given size with a surface tile.
+    """
+    if transparent:
+        surface = pg.Surface(size).convert_alpha()
+        surface.fill((0,0,0,0))
+    else:
+        surface = pg.Surface(size).convert()
+    tile_size = tile.get_size()
+    for i in range(0, tile_size[0]+size[0], tile_size[0]):
+        for j in range(0, tile_size[1]+size[1], tile_size[1]):
+            surface.blit(tile, (i,j))
+    return surface
+    
+
 def get_cell_coordinates(rect, point, size):
     """
     Find the cell of size, within rect, that point occupies.
