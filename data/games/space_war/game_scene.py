@@ -16,9 +16,6 @@ from data.components.labels import FlashingText, Label
 from . import constants, level, actors
 
 
-PATH = os.path.join(".", "data", "games", "space_war", "resources")
-
-
 class Scene(_State):
     """
     This State is updated while our game is running.
@@ -26,14 +23,13 @@ class Scene(_State):
     """
     def __init__(self, controller):
         super(Scene, self).__init__(controller)
-        self.gfx = tools.load_all_gfx(PATH)
-        self.gfx["ships"] = tools.load_all_gfx(os.path.join(PATH, "ships"))
+        constants.load()
         self.next = None
         self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        ship = random.choice(list(self.gfx["ships"].values()))
+        ship = random.choice(list(constants.GFX["ships"].values()))
         self.player = actors.Player((0,0), ship)
-        self.level = level.Level(self.gfx["stars"], self.screen_rect.copy(), self.player)
+        self.level = level.Level(self.screen_rect.copy(), self.player)
 
     def update(self, surface, keys, current_time, dt, scale):
         """
@@ -42,6 +38,20 @@ class Scene(_State):
         dt /= 1000.0
         self.level.update(keys, dt)
         self.draw(surface)
+
+    def startup(self, persistent):
+        """
+        Load game specific resources into constants.
+        """
+        constants.load()
+        super(Scene, self).startup(persistent)
+
+    def cleanup(self):
+        """
+        Unload game specific resources from constants to reclaim memory.
+        """
+        constants.unload()
+        return super(Scene, self).cleanup()
 
     def draw(self, surface):
         """

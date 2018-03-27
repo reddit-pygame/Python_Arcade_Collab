@@ -5,6 +5,9 @@ Drawing and updating of actors should occur here.
 
 import pygame as pg
 
+from data.core import tools
+from . import constants
+
 
 class Level(object):
     """
@@ -12,14 +15,12 @@ class Level(object):
     three star layers.  The player is drawn and updated by this class.
     The player is contained in a pg.sprite.GroupSingle group.
     """
-    def __init__(self, stars, viewport, player):
-        self.raw_stars = tile_surface((2048,2048), stars, True)
-        self.image = self.raw_stars.copy()
+    def __init__(self, viewport, player):
+        self.image = constants.GFX["big_stars"].copy()
         self.rect = self.image.get_rect()
         player.rect.midbottom = self.rect.centerx, self.rect.bottom-50
         player.true_pos = list(player.rect.center)
         self.player_singleton = pg.sprite.GroupSingle(player)
-        self.clear_callback = self.get_callback(self.raw_stars)
         self.make_layers()
         self.viewport = viewport
         self.update_viewport(True)
@@ -36,9 +37,9 @@ class Level(object):
         """
         w, h = self.image.get_size()
         shrink = pg.transform.smoothscale(self.image, (w//2, h//2))
-        self.mid_image = tile_surface((w,h), shrink, True)
+        self.mid_image = tools.tile_surface((w,h), shrink, True)
         shrink = pg.transform.smoothscale(self.image, (w//4, h//4))
-        self.base = tile_surface((w,h), shrink, True)
+        self.base = tools.tile_surface((w,h), shrink, True)
 
     def update(self, keys, dt):
         """
@@ -71,35 +72,17 @@ class Level(object):
         Blit and clear actors on the self.image layer.
         Then blit appropriate viewports of all layers.
         """
-        self.player_singleton.clear(self.image, self.clear_callback)
+        self.player_singleton.clear(self.image, clear_callback)
         self.player_singleton.draw(self.image)
         surface.blit(self.base, (0,0), self.base_viewport)
         surface.blit(self.mid_image, (0,0), self.mid_viewport)
         surface.blit(self.image, (0,0), self.viewport)
 
-    @staticmethod
-    def get_callback(background):
-        def clear_callback(surface, rect):
-            """
-            We need this callback because the clearing background contains
-            transparency.  We need to fill the rect with transparency first.
-            """
-            surface.fill((0,0,0,0), rect)
-            surface.blit(background, rect, rect)
-        return clear_callback
 
-
-def tile_surface(size, tile, transparent=False):
+def clear_callback(surface, rect):
     """
-    Fill a surface of the given size with a surface tile.
+    We need this callback because the clearing background contains
+    transparency.  We need to fill the rect with transparency first.
     """
-    if transparent:
-        surface = pg.Surface(size).convert_alpha()
-        surface.fill((0,0,0,0))
-    else:
-        surface = pg.Surface(size).convert()
-    tile_size = tile.get_size()
-    for i in range(0, tile_size[0]+size[0], tile_size[0]):
-        for j in range(0, tile_size[1]+size[1], tile_size[1]):
-            surface.blit(tile, (i,j))
-    return surface
+    surface.fill((0,0,0,0), rect)
+    surface.blit(constants.GFX["big_stars"], rect, rect)
