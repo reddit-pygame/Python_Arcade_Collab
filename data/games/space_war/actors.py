@@ -5,7 +5,7 @@ This module contains the Player class for the user controlled character.
 import math
 import pygame as pg
 
-import constants
+from . import constants
 
 
 class Player(pg.sprite.Sprite):

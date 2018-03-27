@@ -13,7 +13,7 @@ from data.core import prepare, tools
 from data.components.state_machine import _State
 from data.components.labels import FlashingText, Label
 
-import constants, level, actors
+from . import constants, level, actors
 
 
 PATH = os.path.join(".", "data", "games", "space_war", "resources")
