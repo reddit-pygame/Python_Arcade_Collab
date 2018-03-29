@@ -18,7 +18,7 @@ class Level(object):
     def __init__(self, viewport, player):
         self.image = constants.GFX["big_stars"].copy()
         self.rect = self.image.get_rect()
-        player.rect.midbottom = self.rect.centerx, self.rect.bottom-50
+        player.rect.center = self.rect.center
         player.true_pos = list(player.rect.center)
         self.player_singleton = pg.sprite.GroupSingle(player)
         self.make_layers()

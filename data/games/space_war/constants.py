@@ -22,7 +22,7 @@ def load():
     if GFX is None:
         GFX = tools.load_all_gfx(PATH)
         GFX["ships"] = tools.load_all_gfx(os.path.join(PATH, "ships"))
-        GFX["big_stars"] = tools.tile_surface((2048,2048), GFX["stars"], True)
+        GFX["big_stars"] = tools.tile_surface((2048, 2048), GFX["stars"], True)
 
 
 def unload():

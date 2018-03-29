@@ -15,7 +15,7 @@ class Player(pg.sprite.Sprite):
     def __init__(self, pos, image, speed=420, *groups):
         super(Player, self).__init__(*groups)
         self.top_speed = speed
-        self.acceleration = speed*2
+        self.acceleration = speed * 2
         self.velocity = [0.0, 0.0]
         self.original = pg.transform.rotozoom(image, 0, constants.SCALE_FACTOR)
         self.angle = 270.0
@@ -29,8 +29,8 @@ class Player(pg.sprite.Sprite):
         Updates the players position based on currently held keys.
         """
         self.check_keys(keys, dt)
-        self.true_pos[0] += self.velocity[0]*dt
-        self.true_pos[1] += self.velocity[1]*dt
+        self.true_pos[0] += self.velocity[0] * dt
+        self.true_pos[1] += self.velocity[1] * dt
         self.rect.center = self.true_pos
         if not bounding.contains(self.rect):
             self.on_boundary_collision(bounding)
@@ -61,9 +61,9 @@ class Player(pg.sprite.Sprite):
         """
         for key in constants.ROTATE:
             if keys[key]:
-                self.angle += self.angular_speed*constants.ROTATE[key]*dt
+                self.angle += self.angular_speed * constants.ROTATE[key] * dt
                 self.angle %= 360
-                self.image = pg.transform.rotozoom(self.original,-self.angle,1)
+                self.image = pg.transform.rotozoom(self.original, -self.angle, 1)
                 self.rect = self.image.get_rect(center=self.rect.center)
 
     def thrust(self, keys, dt):
@@ -72,8 +72,8 @@ class Player(pg.sprite.Sprite):
         """
         if keys[constants.THRUST]:
             rads = math.radians(self.angle)
-            self.velocity[0] += self.acceleration*math.cos(rads)*dt
-            self.velocity[1] += self.acceleration*math.sin(rads)*dt
+            self.velocity[0] += self.acceleration*math.cos(rads) * dt
+            self.velocity[1] += self.acceleration*math.sin(rads) * dt
             self.restrict_speed()
 
     def restrict_speed(self):
@@ -84,8 +84,8 @@ class Player(pg.sprite.Sprite):
         adj, op = self.velocity
         if math.hypot(adj, op) > self.top_speed:
             angle = math.atan2(op, adj) # Angle of movement; not ship direction
-            self.velocity[0] = self.top_speed*math.cos(angle)
-            self.velocity[1] = self.top_speed*math.sin(angle)
+            self.velocity[0] = self.top_speed * math.cos(angle)
+            self.velocity[1] = self.top_speed * math.sin(angle)
 
     def draw(self, surface):
         """

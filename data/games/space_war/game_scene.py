@@ -10,10 +10,10 @@ import random
 import pygame as pg
 
 from data.core import prepare, tools
-from data.components.state_machine import _State
+from data.components.state_machine import _State, StateMachine
 from data.components.labels import FlashingText, Label
 
-from . import constants, level, actors
+from . import constants, states
 
 
 class Scene(_State):
@@ -26,18 +26,10 @@ class Scene(_State):
         constants.load()
         self.next = None
         self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
-        cent_x = self.screen_rect.centerx
-        ship = random.choice(list(constants.GFX["ships"].values()))
-        self.player = actors.Player((0,0), ship)
-        self.level = level.Level(self.screen_rect.copy(), self.player)
-
-    def update(self, surface, keys, current_time, dt, scale):
-        """
-        Updates the game scene and then draws the screen.
-        """
-        dt /= 1000.0
-        self.level.update(keys, dt)
-        self.draw(surface)
+        machine_states = {"GAME" : states.Game(self)}
+        self.state_machine = StateMachine(True)
+        self.state_machine.setup_states(machine_states)
+        self.state_machine.start_state("GAME")
 
     def startup(self, persistent):
         """
@@ -53,20 +45,16 @@ class Scene(_State):
         constants.unload()
         return super(Scene, self).cleanup()
 
-    def draw(self, surface):
+    def update(self, surface, keys, current_time, dt, scale):
         """
-        Put all drawing logic here. Called at the end of the update method.
+        Updates the game scene screen.
         """
-        surface.fill(constants.BACKGROUND_COLOR)
-        self.level.draw(surface)
+        if self.state_machine.done:
+            self.done = True
+            self.next = "lobby"
+        self.state_machine.update(surface, keys, current_time, dt, scale)
 
     def get_event(self, event, scale):
-        """
-        Process all events here. States must not have their own embedded
-        event loops as this cuts the rest of the program off from events.
-        If you would like to use mouse position events you will need to scale it
-        with scaled_mouse_pos found in data.core.tools.py.
-        """
         if event.type == pg.QUIT:
             self.done = True
             self.quit = True
@@ -74,3 +62,4 @@ class Scene(_State):
             if event.key == pg.K_ESCAPE:
                 self.done  = True
                 self.next = "lobby"
+        self.state_machine.get_event(event, scale)
