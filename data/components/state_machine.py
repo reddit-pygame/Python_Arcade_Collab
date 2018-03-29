@@ -2,6 +2,7 @@
 A generalized state machine.  Most notably used for general program flow.
 """
 
+import gc
 import pygame as pg
 
 
@@ -68,6 +69,7 @@ class StateMachine(object):
         persist = self.state.cleanup()
         self.start_state(self.state_name, persist)
         self.state.previous = previous
+        gc.collect()
 
     def get_event(self, event, scale=(1,1)):
         """
