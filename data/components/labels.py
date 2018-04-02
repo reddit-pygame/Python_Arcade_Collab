@@ -7,6 +7,7 @@ TODO: needs some cleaning up, consolidation, and documentation.
 
 import os
 import string
+import textwrap
 
 import pygame as pg
 from data.core import prepare, tools
@@ -36,27 +37,6 @@ BUTTON_DEFAULTS = {"call"               : None,
                    "visible"            : True,
                    "active"             : True,
                    "bindings"           : ()}
-
-
-# Helper function for MultiLineLabel class.
-# Seems this can be removed in favor of the standard library textwrap module.
-def wrap_text(text, char_limit, separator=" "):
-    """Splits a string into a list of strings no longer than char_limit."""
-    words = text.split(separator)
-    lines = []
-    current_line = []
-    current_length = 0
-    for word in words:
-        if len(word) + current_length <= char_limit:
-            current_length += len(word) + len(separator)
-            current_line.append(word)
-        else:
-            lines.append(separator.join(current_line))
-            current_line = [word]
-            current_length = len(word) + len(separator)
-    if current_line:
-        lines.append(separator.join(current_line))
-    return lines
 
 
 def _parse_color(color):
@@ -132,7 +112,7 @@ class MultiLineLabel(object):
     def __init__(self, path, size, text, color, rect_attr,
                  bg=None, char_limit=42, align="left", vert_space=0):
         attr = {"center": (0, 0)}
-        lines = wrap_text(text, char_limit)
+        lines = textwrap.wrap(text, char_limit)
         labels = [Label(path, size, line, color, attr, bg) for line in lines]
         width = max([label.rect.width for label in labels])
         spacer = vert_space*(len(lines)-1)
