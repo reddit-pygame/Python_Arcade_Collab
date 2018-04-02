@@ -5,9 +5,9 @@ Logging basics
 import sys
 import logging
 
-from data.core import prepare
+from data.core import constants
 
-LOGGING_LEVEL = logging.DEBUG if prepare.ARGS['debug'] else logging.ERROR
+LOGGING_LEVEL = logging.DEBUG if constants.DEBUG else logging.ERROR
 
 log = logger = logging.getLogger('pyroller')
 handler = logging.StreamHandler(sys.stdout)

@@ -3,7 +3,7 @@ import pygame as pg
 
 from collections import OrderedDict
 
-from data.core import tools, prepare
+from data.core import tools, constants
 from data.components.labels import Button, ButtonGroup
 from data.components.special_buttons import GameButton, NeonButton
 from data.components.animation import Animation
@@ -23,9 +23,9 @@ class LobbyScreen(_State):
         self.animations = pg.sprite.Group()
 
     def update_screen_buttons(self, games):
-        screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
         number_of_pages = int(math.ceil(len(games) / float(self.per_page)))
-        self.loop_length = prepare.RENDER_SIZE[0] * number_of_pages
+        self.loop_length = constants.RENDER_SIZE[0] * number_of_pages
         self.game_buttons = self.make_game_pages(games, screen_rect, self.per_page)
         nav_buttons = self.make_navigation_buttons(screen_rect)
         main_buttons = self.make_main_buttons(screen_rect)
@@ -42,7 +42,7 @@ class LobbyScreen(_State):
         step_x, step_y = width + spacer_x, height + spacer_y
         buttons = ButtonGroup()
         for offset,group in enumerate(groups):
-            offset *= prepare.RENDER_SIZE[0]
+            offset *= constants.RENDER_SIZE[0]
             for i,game in enumerate(group):
                 y, x = divmod(i, columns)
                 pos = (start_x + step_x * x + offset, start_y + step_y * y)
@@ -50,7 +50,7 @@ class LobbyScreen(_State):
         return buttons
 
     def make_navigation_buttons(self, screen_rect):
-        sheet = prepare.GFX["nav_buttons"]
+        sheet = constants.GFX["nav_buttons"]
         size = (53, 50)
         y = 530
         from_center = 15
@@ -87,17 +87,17 @@ class LobbyScreen(_State):
         if not self.animations and len(self.game_buttons) > self.per_page:
             for game in self.game_buttons:
                 self.normalize_scroll(game, mag)
-                fx, fy = game.rect.x+prepare.RENDER_SIZE[0]*mag, game.rect.y
+                fx, fy = game.rect.x+constants.RENDER_SIZE[0]*mag, game.rect.y
                 ani = Animation(x=fx, y=fy, duration=350.0,
                                 transition='in_out_quint', round_values=True)
                 ani.start(game.rect)
                 self.animations.add(ani)
-            prepare.SFX["cardplace4"].play()
+            constants.SFX["cardplace4"].play()
 
     def normalize_scroll(self, game, mag):
         if game.rect.x < 0 and mag == -1:
             game.rect.x += self.loop_length
-        elif game.rect.x >= prepare.RENDER_SIZE[0] and mag == 1:
+        elif game.rect.x >= constants.RENDER_SIZE[0] and mag == 1:
             game.rect.x -= self.loop_length
 
     def startup(self, persistent):
@@ -129,7 +129,7 @@ class LobbyScreen(_State):
 
     def draw(self, surface):
         rect = surface.get_rect()
-        surface.fill(prepare.BACKGROUND_BASE)
+        surface.fill(constants.BACKGROUND_BASE)
         self.buttons.draw(surface)
         for button in self.game_buttons:
             if button.rect.colliderect(rect):

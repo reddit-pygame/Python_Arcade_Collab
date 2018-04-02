@@ -9,7 +9,8 @@ import os
 import random
 import pygame as pg
 
-from data.core import prepare, tools
+from data.core import constants as prog_consts
+from data.core import tools
 from data.components.state_machine import _State, StateMachine
 from data.components.labels import FlashingText, Label
 
@@ -25,7 +26,7 @@ class Scene(_State):
         super(Scene, self).__init__(controller)
         constants.load()
         self.next = None
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), prog_consts.RENDER_SIZE)
         machine_states = {"GAME" : states.Game(self)}
         self.state_machine = StateMachine(True)
         self.state_machine.setup_states(machine_states)

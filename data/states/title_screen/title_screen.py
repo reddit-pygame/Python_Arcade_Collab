@@ -1,6 +1,6 @@
 import pygame as pg
 
-from data.core import tools, prepare
+from data.core import tools, constants
 from data.components.labels import FlashingText
 from data.components.state_machine import _State
 
@@ -12,11 +12,11 @@ class TitleScreen(_State):
     def __init__(self, controller):
         super(TitleScreen, self).__init__(controller)
         self.next = "lobby"
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
-        self.title = prepare.GFX["collab_title"]
+        self.screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
+        self.title = constants.GFX["collab_title"]
         cent_x = self.screen_rect.centerx
         self.title_rect = self.title.get_rect(centerx=cent_x, y=100)
-        anykey_args = (prepare.FONTS["Fixedsys500c"], 30, "[Please Insert Coin]",
+        anykey_args = (constants.FONTS["Fixedsys500c"], 30, "[Please Insert Coin]",
                        pg.Color("gold"), {"center" : (cent_x, 650)}, 350)
         self.anykey = FlashingText(*anykey_args)
         
@@ -34,6 +34,6 @@ class TitleScreen(_State):
         self.draw(surface)
 
     def draw(self, surface):
-        surface.fill(prepare.BACKGROUND_BASE)
+        surface.fill(constants.BACKGROUND_BASE)
         surface.blit(self.title, self.title_rect)
         surface.blit(self.anykey.image, self.anykey.rect)

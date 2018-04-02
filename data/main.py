@@ -5,11 +5,11 @@ Control and starts up the main program.
 
 import cProfile
 import pstats
+
 import data.core.control
 
-# Importing prepare sets up the screen, processes command line arguments,
-# and performs other various setup tasks such as loading resources.
-from data.core import prepare, tools
+# Importing prepare sets up the screen and processes command line arguments.
+from data.core import prepare
 
 
 def main():
@@ -18,11 +18,10 @@ def main():
     things based on supplied command line arguments, and starts the program.
     Use argument -h for details on accepted arguments.
     """
-    args = (prepare.CAPTION, prepare.RENDER_SIZE, prepare.RESOLUTIONS)
     default_state = "snake_splash"
     straight = prepare.ARGS['straight']
     state = straight or default_state
-    app = data.core.control.Control(*args)
+    app = data.core.control.Control()
     app.show_fps = prepare.ARGS["FPS"]
     app.start(state)
     if not prepare.ARGS['profile']:

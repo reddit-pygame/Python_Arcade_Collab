@@ -9,7 +9,7 @@ import pygame as pg
 from collections import OrderedDict
 from importlib import import_module
 
-from data.core import prepare
+from data.core import constants
 from data.components import state_machine
 
 
@@ -19,14 +19,11 @@ class Control(object):
     the event_loop which passes events to the state_machine as needed.
     Autodetection for both core states and game states is also handled here.
     """
-    def __init__(self, caption, render_size, resolutions):
+    def __init__(self):
         self.screen = pg.display.get_surface()
         self.screen_rect = self.screen.get_rect()
-        self.render_size = render_size
-        self.render_surf = pg.Surface(self.render_size).convert()
-        self.resolutions = resolutions
+        self.render_surf = pg.Surface(constants.RENDER_SIZE).convert()
         self.set_scale()
-        self.caption = caption
         self.done = False
         self.clock = pg.time.Clock()
         self.fps = 60.0
@@ -35,9 +32,16 @@ class Control(object):
         self.keys = pg.key.get_pressed()
         self.state_dict = OrderedDict()
         self.game_thumbs = OrderedDict()
+        self.start_music()
         self.auto_discovery("states")
         self.auto_discovery("games")
         self.state_machine = state_machine.StateMachine()
+
+    def start_music(self):
+        pg.mixer.music.load(constants.TITLE_TRACK)
+        pg.mixer.music.set_volume(0.2)
+        if not constants.ARGS["music_off"]:
+            pg.mixer.music.play(-1)
 
     def auto_discovery(self, scene_folder):
         """
@@ -58,7 +62,7 @@ class Control(object):
                 try:
                     thumb = pg.image.load(path).convert()
                 except pg.error:
-                    thumb = prepare.GFX["default_image"]
+                    thumb = constants.GFX["default_image"]
                 self.game_thumbs[folder] = thumb
 
     @staticmethod
@@ -102,7 +106,7 @@ class Control(object):
         Scale the render surface if not the same size as the display surface.
         The render surface is then drawn to the screen.
         """
-        if self.render_size != self.screen_rect.size:
+        if constants.RENDER_SIZE != self.screen_rect.size:
             scale_args = (self.render_surf, self.screen_rect.size, self.screen)
             pg.transform.smoothscale(*scale_args)
         else:
@@ -135,10 +139,10 @@ class Control(object):
         """
         if size == self.screen_rect.size:
             return
-        res_index = self.resolutions.index(self.screen_rect.size)
+        res_index = constants.RESOLUTIONS.index(self.screen_rect.size)
         adjust = 1 if size > self.screen_rect.size else -1
-        if 0 <= res_index + adjust < len(self.resolutions):
-            new_size = self.resolutions[res_index+adjust]
+        if 0 <= res_index + adjust < len(constants.RESOLUTIONS):
+            new_size = constants.RESOLUTIONS[res_index + adjust]
         else:
             new_size = self.screen_rect.size
         self.screen = pg.display.set_mode(new_size, pg.RESIZABLE)
@@ -150,8 +154,8 @@ class Control(object):
         Reset the ratio of render size to window size.
         Used to make sure that mouse clicks are accurate on all resolutions.
         """
-        w_ratio = self.render_size[0]/float(self.screen_rect.w)
-        h_ratio = self.render_size[1]/float(self.screen_rect.h)
+        w_ratio = constants.RENDER_SIZE[0] / float(self.screen_rect.w)
+        h_ratio = constants.RENDER_SIZE[1] / float(self.screen_rect.h)
         self.scale = (w_ratio, h_ratio)
 
     def toggle_show_fps(self, key):
@@ -161,7 +165,7 @@ class Control(object):
         if key == pg.K_F5:
             self.show_fps = not self.show_fps
             if not self.show_fps:
-                pg.display.set_caption(self.caption)
+                pg.display.set_caption(constants.CAPTION)
 
     def main(self):
         """
@@ -175,5 +179,5 @@ class Control(object):
             pg.display.update()
             if self.show_fps:
                 fps = self.clock.get_fps()
-                with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
+                with_fps = "{} - {:.2f} FPS".format(constants.CAPTION, fps)
                 pg.display.set_caption(with_fps)

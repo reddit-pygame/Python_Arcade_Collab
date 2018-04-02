@@ -1,7 +1,7 @@
 import random
 import pygame as pg
 
-from data.core import prepare
+from data.core import constants as prog_consts
 from data.components.state_machine import _State
 from data.components.labels import FlashingText, Label
 
@@ -15,12 +15,12 @@ class AnyKey(_State):
     def __init__(self, title, controller):
         super(AnyKey, self).__init__(controller)
         self.next = None
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), prog_consts.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        anykey_args = (prepare.FONTS["Fixedsys500c"], 50, "[Press Any Key]",
+        anykey_args = (prog_consts.FONTS["Fixedsys500c"], 50, "[Press Any Key]",
                        pg.Color("white"), {"center" : (cent_x, 625)}, 350)
         self.anykey = FlashingText(*anykey_args)
-        self.title = Label(prepare.FONTS["Fixedsys500c"], 100, title,
+        self.title = Label(prog_consts.FONTS["Fixedsys500c"], 100, title,
                          pg.Color("white"), {"centerx": cent_x, "y" : 50})
         self.screen_copy = None
 
@@ -28,7 +28,7 @@ class AnyKey(_State):
         if self.screen_copy:
             surface.blit(self.screen_copy, (0,0))
         else:
-            surface.fill(prepare.BACKGROUND_BASE)
+            surface.fill(prog_consts.BACKGROUND_BASE)
         self.title.draw(surface)
         surface.blit(self.anykey.image, self.anykey.rect)
 
@@ -94,17 +94,18 @@ class Game(_State):
         surface.fill(constants.COLORS["background"])
         tools.draw_cell(surface, self.apple.position,
                         self.apple.color, constants.PLAY_RECT.topleft)
+        offset = constants.PLAY_RECT.topleft
         for wall in self.walls:
-            tools.draw_cell(surface, wall, constants.COLORS["walls"], constants.PLAY_RECT.topleft)
-        self.snake.draw(surface, offset=constants.PLAY_RECT.topleft)
+            tools.draw_cell(surface, wall, constants.COLORS["walls"], offset)
+        self.snake.draw(surface, offset=offset)
 
 
 class YouDead(AnyKey):
     def startup(self, persistant):
         super(YouDead, self).startup(persistant)
-        surf = pg.Surface(prepare.RENDER_SIZE).convert()
+        surf = pg.Surface(prog_consts.RENDER_SIZE).convert()
         screen_copy = pg.display.get_surface().copy()
-        scale_args = (screen_copy, prepare.RENDER_SIZE, surf)
+        scale_args = (screen_copy, prog_consts.RENDER_SIZE, surf)
         pg.transform.smoothscale(*scale_args)
         self.screen_copy = surf
 

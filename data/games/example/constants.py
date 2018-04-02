@@ -1,19 +1,14 @@
 import pygame as pg
 
-from data.core import prepare
+from data.core.constants import RENDER_SIZE
 
-
-##SCREEN_SIZE = (544, 544)
-##PLAY_RECT = pg.Rect(16, 16, 512, 512)
 
 CELL = pg.Rect(0, 0, 29, 29)
-SCREEN_SIZE = prepare.RENDER_SIZE
+SCREEN_SIZE = RENDER_SIZE
 PLAY_RECT = pg.Rect(CELL.w, CELL.h,
                     SCREEN_SIZE[0] - 2*CELL.w, SCREEN_SIZE[1] - 2*CELL.h)
 
 
-
-##CELL = pg.Rect(0, 0, 16, 16)
 BOARD_SIZE = (PLAY_RECT.w//CELL.w, PLAY_RECT.h//CELL.h)
 GROWTH_PER_APPLE = 3
 

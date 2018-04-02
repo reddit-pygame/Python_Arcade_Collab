@@ -1,6 +1,6 @@
 import pygame as pg
 
-from data.core import prepare
+from data.core import constants
 from data.components.labels import FlashingText, Label
 from data.components.state_machine import _State
 
@@ -12,13 +12,13 @@ class HighScores(_State):
     def __init__(self, controller):
         super(HighScores, self).__init__(controller)
         self.next = None
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        anykey_args = (prepare.FONTS["Fixedsys500c"], 30, "[Press Any Key]",
+        anykey_args = (constants.FONTS["Fixedsys500c"], 30, "[Press Any Key]",
                        pg.Color("gold"), {"center" : (cent_x, 650)}, 350)
         self.anykey = FlashingText(*anykey_args)
         text = "Under Construction"
-        self.title = Label(prepare.FONTS["Fixedsys500c"], 72, text,
+        self.title = Label(constants.FONTS["Fixedsys500c"], 72, text,
                          pg.Color("white"), {"center": self.screen_rect.center})
 
     def update(self, surface, keys, current_time, dt, scale):
@@ -29,7 +29,7 @@ class HighScores(_State):
         self.draw(surface)
 
     def draw(self, surface):
-        surface.fill(prepare.BACKGROUND_BASE)
+        surface.fill(constants.BACKGROUND_BASE)
         self.title.draw(surface)
         surface.blit(self.anykey.image, self.anykey.rect)
 

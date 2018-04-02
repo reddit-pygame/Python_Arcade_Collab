@@ -2,10 +2,10 @@ import random
 import collections
 import pygame as pg
 
-from data.core import prepare
+from data.core import constants
 from data.components.state_machine import _State, StateMachine
 
-from . import constants, states
+from . import states
 
 
 class Scene(_State):
@@ -15,7 +15,7 @@ class Scene(_State):
     """
     def __init__(self, controller):
         super(Scene, self).__init__(controller)
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
         machine_states = {"STARTUP" : states.AnyKey("Start!", self),
                           "GAME" : states.Game(self),
                           "DEAD" : states.YouDead("Dead.", self)}

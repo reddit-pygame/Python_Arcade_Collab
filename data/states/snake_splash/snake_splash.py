@@ -2,7 +2,7 @@ from random import randint
 
 import pygame as pg
 
-from data.core import prepare
+from data.core import constants
 from data.components.state_machine import _State
 
 
@@ -13,11 +13,11 @@ class SnakeSplash(_State):
     def __init__(self, controller):
         super(SnakeSplash, self).__init__(controller)
         self.next = "title_screen"
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
         self.timeout = 7
         self.alpha = 0
         self.alpha_speed  = 2  # Alpha change per frame.
-        self.image = prepare.GFX["splash2"]
+        self.image = constants.GFX["splash2"]
         self.image.set_alpha(self.alpha)
         self.rect = self.image.get_rect(center=self.screen_rect.center)
 
@@ -31,7 +31,7 @@ class SnakeSplash(_State):
         self.draw(surface)
 
     def draw(self, surface):
-        surface.fill(prepare.BACKGROUND_BASE)
+        surface.fill(constants.BACKGROUND_BASE)
         surface.blit(self.image, self.rect)
 
     def get_event(self, event, scale):

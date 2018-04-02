@@ -1,6 +1,6 @@
 import pygame as pg
 
-from data.core import prepare
+from data.core import constants
 from data.components.labels import FlashingText, Label
 from data.components.state_machine import _State
 
@@ -12,9 +12,9 @@ class Credits(_State):
     def __init__(self, controller):
         super(Credits, self).__init__(controller)
         self.next = None
-        self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
+        self.screen_rect = pg.Rect((0, 0), constants.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        anykey_args = (prepare.FONTS["Fixedsys500c"], 30, "[Press Any Key]",
+        anykey_args = (constants.FONTS["Fixedsys500c"], 30, "[Press Any Key]",
                        pg.Color("gold"), {"center" : (cent_x, 650)}, 350)
         self.anykey = FlashingText(*anykey_args)
         self.titles = []
@@ -22,11 +22,11 @@ class Credits(_State):
         
         for i,name in enumerate(names, start=-2):
             text = "Some stuff by {}".format(name)
-            self.titles.append(Label(prepare.FONTS["Fixedsys500c"], 48, text,
+            self.titles.append(Label(constants.FONTS["Fixedsys500c"], 48, text,
                                pg.Color("white"),
                                {"centerx" : self.screen_rect.centerx,
                                 "centery" : self.screen_rect.centery + i*80}))
-        self.titles.append(Label(prepare.FONTS["Fixedsys500c"], 48,
+        self.titles.append(Label(constants.FONTS["Fixedsys500c"], 48,
                            "Your Name Here",
                            pg.Color("white"),
                            {"centerx" : self.screen_rect.centerx,
@@ -40,7 +40,7 @@ class Credits(_State):
         self.draw(surface)
 
     def draw(self, surface):
-        surface.fill(prepare.BACKGROUND_BASE)
+        surface.fill(constants.BACKGROUND_BASE)
         for title in self.titles:
             title.draw(surface)
         surface.blit(self.anykey.image, self.anykey.rect)
