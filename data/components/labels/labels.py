@@ -218,7 +218,7 @@ class FlashingText(Label):
         self.image = self.raw_image if self.blink else self.null_image
     
         
-class TextBox(object):
+class TextBox(tools._KwargMixin):
     def __init__(self, rect, **kwargs):
         self.rect = pg.Rect(rect)
         self.buffer = []
@@ -229,7 +229,7 @@ class TextBox(object):
         self.blink = True
         self.blink_timer = 0.0
         self.accepted = string.ascii_letters+string.digits+string.punctuation+" "
-        self.process_kwargs(kwargs)
+        self.process_kwargs("TextBox", TEXTBOX_DEFAULTS, kwargs)
 
     def get_event(self,event, mouse_pos):
         if event.type == pg.KEYDOWN and self.active:
