@@ -14,9 +14,10 @@ class HighScores(_State):
         self.next = None
         self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        self.anykey = FlashingText((cent_x, 650), "[Press Any Key]",
-                                   "Fixedsys500c", pg.Color("gold"), 30, 350)
-        text= "Under Construction"
+        anykey_args = (prepare.FONTS["Fixedsys500c"], 30, "[Press Any Key]",
+                       pg.Color("gold"), {"center" : (cent_x, 650)}, 350)
+        self.anykey = FlashingText(*anykey_args)
+        text = "Under Construction"
         self.title = Label(prepare.FONTS["Fixedsys500c"], 72, text,
                          pg.Color("white"), {"center": self.screen_rect.center})
 

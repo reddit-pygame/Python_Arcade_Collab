@@ -16,8 +16,9 @@ class TitleScreen(_State):
         self.title = prepare.GFX["collab_title"]
         cent_x = self.screen_rect.centerx
         self.title_rect = self.title.get_rect(centerx=cent_x, y=100)
-        self.anykey = FlashingText((cent_x, 650), "[Please Insert Coin]",
-                                   "Fixedsys500c", pg.Color("gold"), 30, 350)
+        anykey_args = (prepare.FONTS["Fixedsys500c"], 30, "[Please Insert Coin]",
+                       pg.Color("gold"), {"center" : (cent_x, 650)}, 350)
+        self.anykey = FlashingText(*anykey_args)
         
     def get_event(self, event, scale):
         if event.type == pg.QUIT:

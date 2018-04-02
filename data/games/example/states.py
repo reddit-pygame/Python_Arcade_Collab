@@ -17,8 +17,9 @@ class AnyKey(_State):
         self.next = None
         self.screen_rect = pg.Rect((0, 0), prepare.RENDER_SIZE)
         cent_x = self.screen_rect.centerx
-        self.anykey = FlashingText((cent_x, 625), "[Press Any Key]",
-                                   "Fixedsys500c", pg.Color("white"), 50, 350)
+        anykey_args = (prepare.FONTS["Fixedsys500c"], 50, "[Press Any Key]",
+                       pg.Color("white"), {"center" : (cent_x, 625)}, 350)
+        self.anykey = FlashingText(*anykey_args)
         self.title = Label(prepare.FONTS["Fixedsys500c"], 100, title,
                          pg.Color("white"), {"centerx": cent_x, "y" : 50})
         self.screen_copy = None

@@ -4,7 +4,8 @@ import pygame as pg
 from collections import OrderedDict
 
 from data.core import tools, prepare
-from data.components.labels import GameButton, NeonButton, Button, ButtonGroup
+from data.components.labels import Button, ButtonGroup
+from data.components.special_buttons import GameButton, NeonButton
 from data.components.animation import Animation
 from data.components.state_machine import _State
 

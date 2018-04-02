@@ -185,6 +185,19 @@ def cursor_from_image(image):
     return icon_string
 
 
+def parse_color(color):
+    """
+    Accepts an RGB, RGBA or pygame color-name and returns
+    a pygame.Color object.
+    """
+    if color is not None:
+        try:
+            return pg.Color(color)
+        except ValueError:
+            return pg.Color(*color)
+    return color
+    
+
 def get_cli_args(caption, win_pos, start_size):
     """
     Modify prepare module globals based on command line arguments,

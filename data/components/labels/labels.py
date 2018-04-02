@@ -5,51 +5,29 @@ such as buttons and text input boxes.
 TODO: needs some cleaning up, consolidation, and documentation.
 """
 
-import os
 import string
 import textwrap
 
 import pygame as pg
-from data.core import prepare, tools
 
+from data.core import tools
+from .defaults import BUTTON_DEFAULTS, TEXTBOX_DEFAULTS
+
+
+__all__ = [
+    "Label",
+    "MultiLineLabel",
+    "ButtonGroup",
+    "Button",
+    "TextBox",
+    "FlashingText"
+]
+    
 
 LOADED_FONTS = {}
 
-BUTTON_DEFAULTS = {"call"               : None,
-                   "args"               : None,
-                   "call_on_up"         : True,
-                   "font"               : None,
-                   "font_size"          : 36,
-                   "text"               : None,
-                   "hover_text"         : None,
-                   "disable_text"       : None,
-                   "text_color"         : pg.Color("white"),
-                   "hover_text_color"   : None,
-                   "disable_text_color" : None,
-                   "fill_color"         : None,
-                   "hover_fill_color"   : None,
-                   "disable_fill_color" : None,
-                   "idle_image"         : None,
-                   "hover_image"        : None,
-                   "disable_image"      : None,
-                   "hover_sound"        : None,
-                   "click_sound"        : None,
-                   "visible"            : True,
-                   "active"             : True,
-                   "bindings"           : ()}
 
-
-def _parse_color(color):
-    if color is not None:
-        try:
-            return pg.Color(color)
-        except ValueError:
-            return pg.Color(*color)
-    return color
-
-
-# Should probably inherit from sprites.
-class Label(object):
+class Label(pg.sprite.Sprite):
     """
     Parent class all labels inherit from. Color arguments can use color names
     or an RGB tuple. rect_attr should be a dict with keys of pygame.Rect
@@ -60,12 +38,13 @@ class Label(object):
     bg is not passed to __init__.
     """
     def __init__(self, path, size, text, color, rect_attr, bg=None):
+        super(Label, self).__init__()
         self.path, self.size = path, size
         if (path, size) not in LOADED_FONTS:
             LOADED_FONTS[(path, size)] = pg.font.Font(path, size)
         self.font = LOADED_FONTS[(path, size)]
-        self.bg = _parse_color(bg)
-        self.color = _parse_color(color)
+        self.bg = tools.parse_color(bg)
+        self.color = tools.parse_color(color)
         self.rect_attr = rect_attr
         self.set_text(text)
 
@@ -92,17 +71,6 @@ class Label(object):
         Blit self.image to target surface.
         """
         surface.blit(self.image, self.rect)
-
-
-# Should probably be depracated with Labels turned into sprites so that
-# They can use standard sprite groups.
-class GroupLabel(Label):
-    """
-    Creates a Label object which is then appended to group.
-    """
-    def __init__(self, group, path, size, text, color, rect_attr, bg=None):
-        super(GroupLabel,self).__init__(path, size, text, color, rect_attr, bg)
-        group.append(self)
 
 
 class MultiLineLabel(object):
@@ -234,84 +202,13 @@ class Button(pg.sprite.Sprite, tools._KwargMixin):
         surface.blit(self.image, self.rect)
 
 
-class NeonButton(Button):
-    """
-    Neon sign style button that glows on mouseover.
-    """
-    width = 182
-    height = 58
-    
-    def __init__(self, pos, text, font_size=32,
-                 call=None, args=None, *groups, **kwargs):
-        text = text.replace("_", " ")
-        blank = prepare.GFX["neon_button_blank"].copy()
-        on_label = Label(prepare.FONTS["Fixedsys500c"], font_size, text,
-                         prepare.HIGH_LIGHT_GREEN, {"center": (91, 29)})
-        off_label = Label(prepare.FONTS["Fixedsys500c"], font_size, text,
-                          prepare.LOW_LIGHT_GREEN, {"center": (91, 29)})
-        on_image = blank.subsurface((self.width, 0, self.width, self.height))
-        off_image = blank.subsurface((0, 0, self.width, self.height))
-        on_label.draw(on_image)
-        off_label.draw(off_image)
-        rect = on_image.get_rect(topleft=pos)
-        settings = {"hover_image" : on_image,
-                    "idle_image"  : off_image,
-                    "call"        : call,
-                    "args"        : args}
-        settings.update(kwargs)
-        super(NeonButton, self).__init__(rect, *groups, **settings)
-
-
-class GameButton(Button):
-    ss_size = (160, 120)
-    width = ss_size[0] + 12
-    height = ss_size[1] + 12
-    font = prepare.FONTS["Fixedsys500c"]
-
-    def __init__(self, pos, game, thumb, call, *groups, **kwargs):
-        path = os.path.join(".", "data", "states", game)
-        idle, highlight = self.make_images(game, thumb)
-        rect = idle.get_rect(topleft=pos)
-        settings = {"hover_image" : highlight,
-                    "idle_image"  : idle,
-                    "call"        : call,
-                    "args"        : game}
-        settings.update(kwargs)
-        super(GameButton, self).__init__(rect, *groups, **settings)
-
-    def make_images(self, game, icon):
-        icon = pg.transform.scale(icon, self.ss_size).convert_alpha()
-        icon_rect = icon.get_rect()
-        label_text = game.replace("_", " ").capitalize()
-        label = Label(self.font, 28, label_text, prepare.LOW_LIGHT_GREEN,
-                      {"center": (0, 0)})
-        rect = pg.Rect(0, 0, self.width, self.height+label.rect.h)
-        icon_rect.midtop = (rect.centerx, 10)
-        label.rect.midtop = icon_rect.midbottom
-        frame = label.image.get_rect()
-        frame.w = icon_rect.w
-        frame.midtop=icon_rect.midbottom
-        image = pg.Surface(rect.size).convert_alpha()
-        image.fill((0,0,0,0))
-        image.blit(icon, icon_rect)
-        image.fill(pg.Color("gray10"), frame)
-        highlight = image.copy()
-        pg.draw.rect(image, prepare.LOW_LIGHT_GREEN, icon_rect, 4)
-        pg.draw.rect(image, prepare.LOW_LIGHT_GREEN, frame, 4)
-        highlight.blit(prepare.GFX["game_highlight"], (0, 3))
-        for surface in (image, highlight):
-            label.draw(surface)
-        return (image, highlight)
-
-
-class FlashingText(pg.sprite.Sprite):
-    def __init__(self, center, text, font, color, size, delay, *groups):
-        pg.sprite.Sprite.__init__(self, *groups)
-        self.raw_image = render_font(font, size, text, color)
+class FlashingText(Label):
+    def __init__(self, path, size, text, color, rect_attr, delay, *groups):
+        super(FlashingText, self).__init__(path, size, text, color, rect_attr, *groups)
+        self.raw_image = self.image.copy()        
         self.null_image = pg.Surface((1,1)).convert_alpha()
         self.null_image.fill((0,0,0,0))
-        self.image = self.raw_image
-        self.rect = self.image.get_rect(center=center)
+        self.rect = self.image.get_rect(**rect_attr)
         self.blink = False
         self.timer = tools.Timer(delay)
 
@@ -319,15 +216,6 @@ class FlashingText(pg.sprite.Sprite):
         if self.timer.check_tick(now):
             self.blink = not self.blink
         self.image = self.raw_image if self.blink else self.null_image
-
-
-def render_font(font, size, msg, color=pg.Color("white")):
-    """
-    Takes the name of a loaded font, the size, and the color and returns
-    a rendered surface of the msg given.
-    """
-    selected_font = pg.font.Font(prepare.FONTS[font], size)
-    return selected_font.render(msg, 1, color)
     
         
 class TextBox(object):
@@ -342,25 +230,6 @@ class TextBox(object):
         self.blink_timer = 0.0
         self.accepted = string.ascii_letters+string.digits+string.punctuation+" "
         self.process_kwargs(kwargs)
-
-    def process_kwargs(self,kwargs):
-        defaults = {"id" : None,
-                    "command" : None,
-                    "active" : True,
-                    "color" : pg.Color("white"),
-                    "font_color" : pg.Color("black"),
-                    "outline_color" : pg.Color("black"),
-                    "outline_width" : 2,
-                    "active_color" : pg.Color("blue"),
-                    "font" : pg.font.Font(None, self.rect.height+4),
-                    "clear_on_enter" : False,
-                    "inactive_on_enter" : True}
-        for kwarg in kwargs:
-            if kwarg in defaults:
-                defaults[kwarg] = kwargs[kwarg]
-            else:
-                raise KeyError("InputBox accepts no keyword {}.".format(kwarg))
-        self.__dict__.update(defaults)
 
     def get_event(self,event, mouse_pos):
         if event.type == pg.KEYDOWN and self.active:
@@ -400,7 +269,7 @@ class TextBox(object):
 
     def draw(self,surface):
         outline_color = self.active_color if self.active else self.outline_color
-        outline = self.rect.inflate(self.outline_width*2,self.outline_width*2)
+        outline = self.rect.inflate(self.outline_width*2, self.outline_width*2)
         surface.fill(outline_color,outline)
         surface.fill(self.color,self.rect)
         if self.rendered:
